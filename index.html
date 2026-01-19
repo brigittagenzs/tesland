@@ -2,66 +2,52 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Link Random</title>
+    <title>Generator Link Instan</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { color: #333; margin-top: 0; }
-        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
-        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        button { background: #2563eb; color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 20px; font-size: 16px; font-weight: bold; }
-        button:hover { background: #1d4ed8; }
-        #result { margin-top: 25px; padding: 15px; background: #eef2ff; border-radius: 8px; border: 1px dashed #2563eb; display: none; }
-        .link-text { word-break: break-all; color: #2563eb; font-family: monospace; }
+        body { font-family: sans-serif; background: #f4f4f9; display: flex; justify-content: center; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 400px; }
+        input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #resultBox { margin-top: 20px; display: none; padding: 15px; background: #f0f7ff; border: 1px dashed #2563eb; border-radius: 8px; word-break: break-all; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Link Preview Generator</h2>
-        <label>Judul Preview</label>
-        <input type="text" id="t" placeholder="Contoh: Video Viral Terbaru">
-        
-        <label>URL Gambar (Hotlink)</label>
-        <input type="text" id="i" placeholder="https://site.com/gambar.jpg">
-        
-        <label>URL Tujuan (Target Link)</label>
-        <input type="text" id="u" placeholder="https://link-tujuan.com">
-        
-        <button onclick="generate()">Generate Random Domain Link</button>
-        
-        <div id="result">
-            <strong>Link Hasil (Siap Share):</strong><br>
-            <p id="generatedLink" class="link-text"></p>
-            <small style="color: #666;">*Deskripsi akan otomatis: 10.000 - 1.000.000 online girls</small>
+    <div class="container">
+        <h2>Link Generator</h2>
+        <p style="color: #666; font-size: 0.9em;">Tempel URL tujuan akhir Anda di bawah ini.</p>
+        <input type="text" id="targetUrl" placeholder="https://link-tujuan-anda.com">
+        <button onclick="generateLink()">Generate & Copy Link</button>
+        <div id="resultBox">
+            <strong>Link Anda:</strong><br>
+            <span id="finalLink" style="font-family: monospace; color: #2563eb;"></span>
         </div>
     </div>
 
     <script>
-        async function generate() {
-            const btn = document.querySelector('button');
-            btn.innerText = "Sabar, lagi ambil domain...";
+        async function generateLink() {
+            const url = document.getElementById('targetUrl').value;
+            if(!url) return alert("Masukkan URL tujuan!");
             
-            const t = encodeURIComponent(document.getElementById('t').value);
-            const i = encodeURIComponent(document.getElementById('i').value);
-            const u = encodeURIComponent(document.getElementById('u').value);
+            const btn = document.querySelector('button');
+            btn.innerText = "Mengambil Domain...";
 
             try {
-                // Ambil domain acak dari Cloudflare Function
+                // Mengambil domain acak dari script share.js
                 const res = await fetch('/share?get_random=true');
                 const data = await res.json();
                 
-                if (data.domain) {
-                    const domain = data.domain.replace(/\/$/, ""); // hapus slash akhir jika ada
-                    const final = `https://${domain}/share?title=${t}&img=${i}&url=${u}`;
-                    
-                    document.getElementById('generatedLink').innerText = final;
-                    document.getElementById('result').style.display = 'block';
-                }
-            } catch (err) {
-                alert("Gagal koneksi ke server atau domain list!");
-            } finally {
-                btn.innerText = "Generate Random Domain Link";
+                const final = `https://${data.domain}/share?url=${encodeURIComponent(url)}`;
+                
+                document.getElementById('finalLink').innerText = final;
+                document.getElementById('resultBox').style.display = 'block';
+                
+                // Copy otomatis
+                navigator.clipboard.writeText(final);
+                btn.innerText = "Berhasil Disalin!";
+                setTimeout(() => btn.innerText = "Generate & Copy Link", 2000);
+            } catch(e) {
+                alert("Gagal mengambil domain acak. Pastikan domains.txt di GitHub benar.");
+                btn.innerText = "Generate & Copy Link";
             }
         }
     </script>
