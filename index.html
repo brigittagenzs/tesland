@@ -3,105 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta property="og:title" content="Verified Content Access">
-    <meta property="og:description" content="Click to verify and proceed to the destination.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80">
-    
-    <title>Please Wait...</title>
+    <title>Waiting for you...</title>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
         body { width: 100%; height: 100vh; overflow: hidden; background: #000; color: #fff; }
 
-        /* Fullscreen Video Background */
         #bg-video {
             position: absolute;
             top: 50%; left: 50%;
             min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
             transform: translate(-50%, -50%);
             z-index: -1;
-            opacity: 0.7;
+            opacity: 0.6;
             object-fit: cover;
         }
 
-        /* Overlay Gelap */
-        .overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 0;
-        }
-
-        /* Container */
         .container {
-            position: relative;
-            z-index: 2;
             height: 100%;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
+            background: rgba(0,0,0,0.3);
         }
 
-        /* Glass Card */
         .card {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
             padding: 40px;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 400px;
+            width: 90%;
         }
 
         .profile-pic {
-            width: 90px;
-            height: 90px;
+            width: 100px; height: 100px;
             border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.8);
+            border: 3px solid #fff;
             margin-bottom: 20px;
             object-fit: cover;
         }
 
-        h2 { font-weight: 700; font-size: 1.8rem; margin-bottom: 5px; }
-        p.username { font-size: 0.9rem; opacity: 0.8; letter-spacing: 1px; margin-bottom: 25px; text-transform: uppercase; }
-
-        .quote {
-            font-size: 1.1rem;
-            font-style: italic;
-            line-height: 1.5;
+        .message {
+            font-size: 1.2rem;
             margin-bottom: 30px;
-            color: #eee;
+            line-height: 1.4;
         }
 
-        /* Button */
         .btn-continue {
             display: inline-block;
-            background: linear-gradient(45deg, #FF512F, #DD2476);
-            color: white;
+            background: #fff;
+            color: #000;
             padding: 15px 40px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 1rem;
             transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(221, 36, 118, 0.4);
-            border: none;
-            cursor: pointer;
         }
 
-        .btn-continue:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(221, 36, 118, 0.6);
-        }
-
-        .hidden { display: none; }
+        .btn-continue:hover { transform: scale(1.05); background: #eee; }
     </style>
 </head>
 <body>
@@ -109,97 +71,58 @@
     <video autoplay muted loop playsinline id="bg-video">
         <source src="" type="video/mp4">
     </video>
-    <div class="overlay"></div>
 
     <div class="container">
         <div class="card">
-            <img src="" id="profile-img" class="profile-pic" alt="Profile">
-            <h2 id="random-name">Loading...</h2>
-            <p class="username">@VerifiedUser</p>
+            <img src="" id="profile-img" class="profile-pic">
             
-            <p class="quote">"<span id="random-quote">...</span>"</p>
-
-            <a href="#" id="target-link" class="btn-continue">
-                Access Content
-            </a>
-            
-            <div id="error-msg" style="color: #ff6b6b; margin-top:10px; font-size:0.8rem;" class="hidden">
-                No destination URL provided.
+            <div class="message">
+                <strong id="display-name">...</strong> is waiting for you to come.
             </div>
+
+            <a href="#" id="target-link" class="btn-continue">Continue</a>
         </div>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-
-        // 1. Random Background Videos (MP4) - Nature/Aesthetic
         const videos = [
-            "https://videos.pexels.com/video-files/856973/856973-hd_1920_1080_25fps.mp4", // Waves
-            "https://videos.pexels.com/video-files/1448735/1448735-hd_1920_1080_24fps.mp4", // Forest
-            "https://videos.pexels.com/video-files/2552601/2552601-hd_1920_1080_24fps.mp4", // Clouds
-            "https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080_25fps.mp4", // Rain
-            "https://videos.pexels.com/video-files/3629511/3629511-hd_1920_1080_25fps.mp4"  // Abstract
+            "https://videos.pexels.com/video-files/856973/856973-hd_1920_1080_25fps.mp4",
+            "https://videos.pexels.com/video-files/3125907/3125907-hd_1920_1080_25fps.mp4",
+            "https://videos.pexels.com/video-files/2022395/2022395-hd_1920_1080_30fps.mp4"
         ];
 
-        // 2. Random Profile Pictures
         const profiles = [
-            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
-            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
-            "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
-            "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80"
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200",
+            "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200"
         ];
 
-        // 3. Random Names
-        const names = [
-            "Jessica", "Alexander", "Sophia", "Michael", 
-            "Emily", "Daniel", "Olivia", "David",
-            "Isabella", "James"
-        ];
+        const names = ["Sarah", "Alex", "Chloe", "Daniel", "Zoe", "Ryan"];
+        const buttonTexts = ["Continue", "Click Here", "Open Message", "Join Now"];
 
-        // 4. Random English Quotes
-        const quotes = [
-            "The best way to predict the future is to create it.",
-            "Dream big and dare to fail.",
-            "Happiness is not by chance, but by choice.",
-            "Do what you love, love what you do.",
-            "Stay hungry, stay foolish.",
-            "Every moment is a fresh beginning.",
-            "Believe you can and you're halfway there."
-        ];
-
-        // --- LOGIC ---
-        function getRandom(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
         document.addEventListener("DOMContentLoaded", () => {
-            // Set Random Content
-            document.querySelector("#bg-video source").src = getRandom(videos);
-            document.getElementById("bg-video").load(); // Reload video source
-            
+            // 1. Setup Visual Random
+            const selectedName = getRandom(names);
+            document.getElementById("bg-video").src = getRandom(videos);
             document.getElementById("profile-img").src = getRandom(profiles);
-            document.getElementById("random-name").innerText = getRandom(names);
-            document.getElementById("random-quote").innerText = getRandom(quotes);
+            document.getElementById("display-name").innerText = selectedName;
+            document.getElementById("target-link").innerText = getRandom(buttonTexts);
 
-            // Get URL Parameter (The Destination)
-            const urlParams = new URLSearchParams(window.location.search);
-            const destination = urlParams.get('dest'); // We look for ?dest=...
-
-            const btn = document.getElementById("target-link");
+            // 2. Decode URL dari URL Path
+            // Mengambil string setelah '?'
+            const encodedData = window.location.search.substring(1); 
             
-            if (destination) {
-                // Decode URL incase it was encoded
+            if (encodedData) {
                 try {
-                    btn.href = decodeURIComponent(destination);
+                    // Decode Base64 kembali ke URL asli
+                    const decodedUrl = atob(encodedData);
+                    document.getElementById("target-link").href = decodedUrl;
                 } catch (e) {
-                    btn.href = destination;
+                    console.error("Invalid URL format");
+                    document.getElementById("target-link").innerText = "Link Expired";
                 }
-            } else {
-                btn.href = "#";
-                btn.style.opacity = "0.5";
-                btn.style.cursor = "not-allowed";
-                document.getElementById("error-msg").classList.remove("hidden");
-                btn.innerText = "No Link Found";
             }
         });
     </script>
