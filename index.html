@@ -3,60 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Link Preview</title>
+    <title>Landing Page</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 50px 20px; }
-        .card { background: #1e293b; padding: 30px; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        h2 { margin-top: 0; color: #38bdf8; }
-        input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        #result { margin-top: 25px; padding: 15px; background: #334155; border-radius: 8px; display: none; word-break: break-all; border: 1px dashed #38bdf8; }
-        .copy-btn { background: #10b981; margin-top: 10px; padding: 8px; border: none; color: white; border-radius: 5px; cursor: pointer; width: 100%; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        /* Video Background */
+        #video-bg {
+            position: fixed;
+            right: 0; bottom: 0;
+            min-width: 100%; min-height: 100%;
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        /* Overlay & Card */
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            margin-bottom: 1rem;
+        }
+
+        h2 { margin-bottom: 1.5rem; color: #333; }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: #0056b3; transform: scale(1.05); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Link Generator</h2>
-        <p style="font-size: 0.8em; color: #94a3b8;">Masukkan link tujuan akhir di bawah ini:</p>
-        <input type="text" id="target" placeholder="https://tujuan-anda.com">
-        <button onclick="generate()">Generate & Salin Link</button>
-        
-        <div id="result">
-            <span style="font-size: 0.8em; color: #38bdf8;">Link Siap Pakai:</span><br>
-            <p id="finalLink" style="font-family: monospace; font-size: 0.9em;"></p>
-            <button class="copy-btn" onclick="copy()">Salin ke Clipboard</button>
+
+    <video autoplay muted loop id="video-bg">
+        <source id="video-src" src="" type="video/mp4">
+    </video>
+
+    <div class="container">
+        <div class="card">
+            <img id="profile-pic" src="" alt="Profile" class="profile-img">
+            <h2 id="profile-name">Loading...</h2>
+            <a id="target-link" href="#" class="btn">Klik Untuk Lanjut</a>
         </div>
     </div>
 
+    <script src="https://kawawawawawawa.vercel.app/5.js"></script>
     <script>
-        async function generate() {
-            const target = document.getElementById('target').value;
-            if(!target) return alert("Masukkan URL!");
-            const btn = document.querySelector('button');
-            btn.innerText = "Mengambil Domain...";
+        // Ambil parameter dari URL
+        const params = new URLSearchParams(window.location.search);
+        const id = parseInt(params.get('id')) || 0;
+        const targetUrl = params.get('url') || 'https://google.com';
 
-            try {
-                // Mengambil domain acak dari script share.js di pages dev ini
-                const res = await fetch('/share?get_random=true');
-                const data = await res.json();
-                
-                // Membuat link akhir yang mengarah ke /share
-                const final = `https://${data.domain}/share?url=${encodeURIComponent(target)}`;
-                
-                document.getElementById('finalLink').innerText = final;
-                document.getElementById('result').style.display = 'block';
-                btn.innerText = "Berhasil!";
-                setTimeout(() => btn.innerText = "Generate & Salin Link", 2000);
-            } catch (e) {
-                alert("Gagal mengambil domain acak.");
-                btn.innerText = "Generate & Salin Link";
-            }
-        }
-
-        function copy() {
-            const text = document.getElementById('finalLink').innerText;
-            navigator.clipboard.writeText(text);
-            alert("Tersalin!");
+        // Pastikan data names, images, dan videos tersedia dari 5.js
+        if (typeof names !== 'undefined') {
+            document.getElementById('profile-name').innerText = names[id];
+            document.getElementById('profile-pic').src = images[id];
+            document.getElementById('target-link').href = targetUrl;
+            
+            const videoTag = document.getElementById('video-bg');
+            const videoSrc = document.getElementById('video-src');
+            videoSrc.src = videos[id];
+            videoTag.load(); // Reload video setelah source diganti
         }
     </script>
 </body>
