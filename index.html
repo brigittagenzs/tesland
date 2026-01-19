@@ -4,110 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Video Viral Terbaru</title>
-    <meta name="title" content="Video Viral Terbaru">
-    <meta name="description" content="Klik untuk melihat video selengkapnya">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tesland.pages.dev/">
-    <meta property="og:title" content="Media Preview - Watch Now">
-    <meta property="og:description" content="Video Viral Terbaru Hari Ini">
-    <meta property="og:image" content="https://your-image-link.com/thumbnail.jpg"> 
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:image" content="https://your-image-link.com/thumbnail.jpg">
-
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta property="og:title" content="Kutipan Hari Ini Untukmu">
+    <meta property="og:description" content="Klik untuk melihat pesan spesial dan inspirasi harian.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80">
+    
+    <title>Inspirasi Harian</title>
+    
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; }
-        #bg-video {
-            position: fixed; right: 0; bottom: 0;
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto; z-index: -100;
-            object-fit: cover; filter: brightness(0.5);
+        /* Reset & Base Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body, html { height: 100%; width: 100%; overflow: hidden; background-color: #000; }
+
+        /* Fullscreen Background */
+        #bg-media {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.6; /* Gelapkan sedikit agar teks terbaca */
+            z-index: -1;
+            transition: opacity 1s ease-in-out;
         }
-        .content-overlay {
-            position: relative; z-index: 1; height: 100vh;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            text-align: center; background: rgba(0, 0, 0, 0.4);
+
+        /* Container Utama */
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            backdrop-filter: blur(4px); /* Efek kaca buram */
         }
-        .glass-card {
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2.5rem 1.5rem; border-radius: 2rem;
-            max-width: 90%; width: 380px;
+
+        /* Profile Card */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            animation: fadeInUp 1s ease;
         }
-        .btn-main {
-            background: linear-gradient(90deg, #ec4899, #8b5cf6);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+
+        /* Profile Image */
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Teks */
+        h1 { font-size: 1.5rem; margin-bottom: 5px; font-weight: 600; }
+        p.role { font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px; font-style: italic; }
+        
+        /* Quote Box */
+        .quote-box {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        /* Button */
+        .btn-direct {
+            display: inline-block;
+            background: #25D366; /* Warna WA atau custom */
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-direct:hover {
+            transform: scale(1.05);
+            background: #128C7E;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <div id="landing-ui" class="hidden">
-        <video autoplay muted loop playsinline id="bg-video">
-            <source src="media.mp4" type="video/mp4">
-        </video>
+    <img id="bg-media" src="" alt="Background Nature">
 
-        <div class="content-overlay">
-            <div class="glass-card">
-                <h1 id="v-title" class="text-white text-2xl font-black mb-2 tracking-tight">VIDEO EXCLUSIVE</h1>
-                <p id="v-desc" class="text-pink-400 text-sm font-bold mb-8 uppercase tracking-widest"></p>
-                
-                <a id="v-btn" href="#" class="btn-main inline-block w-full py-4 text-white rounded-full text-xl font-black uppercase tracking-tighter transition transform hover:scale-105 active:scale-95">
-                    WATCH NOW
-                </a>
-                
-                <div class="mt-6 flex justify-center items-center gap-2 text-[10px] text-gray-400 uppercase tracking-widest">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    Live Streaming Active
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container">
+        <div class="profile-card">
+            <img id="profile-pic" src="" alt="Profile" class="profile-img">
+            
+            <h1 id="user-name">Loading...</h1>
+            <p class="role">Inspirasi Hari Ini</p>
 
-    <div id="generator-ui" class="hidden min-h-screen flex items-center justify-center bg-slate-900 p-4">
-        <div class="w-full max-w-md p-8 bg-slate-800 rounded-3xl shadow-2xl">
-            <h2 class="text-2xl font-bold mb-6 text-pink-500 text-center">Config Generator</h2>
-            <input type="text" id="targetUrl" placeholder="Paste Destination Link..." class="w-full p-3 mb-4 rounded-xl bg-slate-700 text-white outline-none focus:ring-2 focus:ring-pink-500">
-            <button onclick="generateLink()" class="w-full bg-pink-600 py-3 rounded-xl font-bold text-white uppercase shadow-lg">Create Link</button>
-            <div id="resultArea" class="hidden mt-6">
-                <textarea id="finalLink" readonly class="w-full p-3 h-24 text-xs bg-black rounded-xl border border-pink-900 text-pink-400"></textarea>
+            <div class="quote-box">
+                "<span id="user-quote">...</span>"
             </div>
+
+            <a href="#" id="direct-link" class="btn-direct">Lanjut Baca &rarr;</a>
         </div>
     </div>
 
     <script>
-        function getRandomGirls() {
-            const num = Math.floor(Math.random() * (100000 - 10000 + 1)) + 10000;
-            return `${num.toLocaleString()} Online Girls Ready`;
+        // --- DATA BASE (Bisa ditambah) ---
+        
+        // 1. Daftar Nama (Indonesia)
+        const names = [
+            "Ahmad Fauzi", "Siti Aminah", "Rudi Hartono", "Dewi Sartika", 
+            "Budi Santoso", "Rina Marlina", "Eko Prasetyo", "Nisa Sabyan",
+            "Fajar Nugraha", "Lestari Alam"
+        ];
+
+        // 2. Daftar Foto Background (Pemandangan Alam / Masjid / Arsitektur)
+        const backgrounds = [
+            "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80", // Alam Kabut
+            "https://images.unsplash.com/photo-1519681393798-3828fb4090bb?auto=format&fit=crop&w=1920&q=80", // Gunung
+            "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80", // Taj Mahal/Arsitektur
+            "https://images.unsplash.com/photo-1501854140884-074bf6b24363?auto=format&fit=crop&w=1920&q=80", // Pantai
+            "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=1920&q=80"  // Hutan Gelap
+        ];
+
+        // 3. Daftar Foto Profil (Avatar Random)
+        const profileImages = [
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80",
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=200&q=80",
+            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80"
+        ];
+
+        // 4. Daftar Kata-Kata Mutiara / Motivasi
+        const quotes = [
+            "Rezeki sudah tertakar, tidak akan tertukar.",
+            "Mulailah harimu dengan Bismillah dan senyuman.",
+            "Kesabaran adalah kunci dari segala kelegaan.",
+            "Sebaik-baik manusia adalah yang paling bermanfaat bagi orang lain.",
+            "Jangan menyerah, badai pasti berlalu.",
+            "Bersyukur adalah cara terbaik menikmati hidup.",
+            "Usaha tidak akan pernah mengkhianati hasil."
+        ];
+
+        // 5. Link Tujuan Akhir (Ganti dengan link Anda)
+        const destinationUrl = "https://google.com"; 
+
+        // --- LOGIC SCRIPT ---
+
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        const params = new URLSearchParams(window.location.search);
-        const data = params.get('v');
+        document.addEventListener("DOMContentLoaded", () => {
+            // Ambil elemen
+            const bgElement = document.getElementById("bg-media");
+            const nameElement = document.getElementById("user-name");
+            const quoteElement = document.getElementById("user-quote");
+            const profileElement = document.getElementById("profile-pic");
+            const linkElement = document.getElementById("direct-link");
 
-        if (data) {
-            document.getElementById('landing-ui').classList.remove('hidden');
-            try {
-                const decoded = JSON.parse(atob(data));
-                document.getElementById('v-title').innerText = decoded.t || "PRIVATE VIDEO";
-                document.getElementById('v-desc').innerText = getRandomGirls();
-                document.getElementById('v-btn').href = decoded.u;
-            } catch (e) { console.error("Invalid data"); }
-        } else {
-            document.getElementById('generator-ui').classList.remove('hidden');
-        }
+            // Set Data Random
+            bgElement.src = getRandomItem(backgrounds);
+            nameElement.innerText = getRandomItem(names);
+            quoteElement.innerText = getRandomItem(quotes);
+            profileElement.src = getRandomItem(profileImages);
 
-        function generateLink() {
-            const u = document.getElementById('targetUrl').value;
-            if(!u) return alert("Fill URL!");
-            const obj = { u: u, t: "EXCLUSIVE CONTENT" };
-            const encoded = btoa(JSON.stringify(obj));
-            document.getElementById('resultArea').classList.remove('hidden');
-            document.getElementById('finalLink').value = window.location.origin + window.location.pathname + "?v=" + encoded;
-        }
+            // Set Link Tujuan
+            linkElement.href = destinationUrl;
+        });
+
     </script>
 </body>
 </html>
