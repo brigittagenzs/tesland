@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Preview Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: white; font-family: sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="generator-ui" class="hidden w-full max-w-md p-8 glass rounded-2xl">
+        <h2 class="text-2xl font-bold mb-6 text-pink-500">URL Generator</h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm mb-1">Target URL (Destinasi):</label>
+                <input type="text" id="targetUrl" placeholder="https://example.com" class="w-full p-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-pink-500">
+            </div>
+            <div>
+                <label class="block text-sm mb-1">Image Preview URL:</label>
+                <input type="text" id="imageUrl" placeholder="https://site.com/foto.jpg" class="w-full p-2 rounded bg-gray-800 border border-gray-700">
+            </div>
+            <div>
+                <label class="block text-sm mb-1">Title Preview:</label>
+                <input type="text" id="titleText" placeholder="Contoh: Video Viral Hari Ini" class="w-full p-2 rounded bg-gray-800 border border-gray-700">
+            </div>
+            <button onclick="generateLink()" class="w-full bg-pink-600 hover:bg-pink-700 py-2 rounded font-bold transition">Generate Link</button>
+            
+            <div id="resultArea" class="hidden mt-6">
+                <p class="text-xs text-gray-400 mb-1">Copy Link Dibawah:</p>
+                <textarea id="finalLink" readonly class="w-full p-2 h-24 text-xs bg-black rounded border border-pink-500 text-pink-300 focus:outline-none"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="landing-ui" class="hidden w-full max-w-lg text-center">
+        <div class="glass p-4 rounded-3xl overflow-hidden shadow-2xl">
+            <video id="v-player" class="w-full rounded-2xl mb-4 aspect-video object-cover" controls autoplay muted loop>
+                <source src="media.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+
+            <h1 id="v-title" class="text-xl font-bold mb-2">Loading...</h1>
+            <p id="v-desc" class="text-pink-400 font-semibold mb-6 italic"></p>
+
+            <a id="v-btn" href="#" class="inline-block w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-lg font-extrabold uppercase tracking-widest animate-bounce shadow-lg">
+                Masuk Sekarang
+            </a>
+        </div>
+        <p class="mt-4 text-gray-500 text-xs">18+ Only. Content may be sensitive.</p>
+    </div>
+
+    <script>
+        // Logika Random Deskripsi
+        function getRandomGirls() {
+            const num = Math.floor(Math.random() * (100000 - 10000 + 1)) + 10000;
+            return `${num.toLocaleString()} Girls ready or online Girls`;
+        }
+
+        // Jalankan saat halaman dibuka
+        const params = new URLSearchParams(window.location.search);
+        const data = params.get('v');
+
+        if (data) {
+            // MODE LANDING PAGE
+            document.getElementById('landing-ui').classList.remove('hidden');
+            try {
+                const decoded = JSON.parse(atob(data));
+                document.getElementById('v-title').innerText = decoded.t;
+                document.getElementById('v-desc').innerText = getRandomGirls();
+                document.getElementById('v-btn').href = decoded.u;
+                // Mengubah meta og:image secara dinamis (terbatas pada beberapa platform)
+                if(decoded.i) {
+                    let meta = document.createElement('meta');
+                    meta.property = "og:image";
+                    meta.content = decoded.i;
+                    document.getElementsByTagName('head')[0].appendChild(meta);
+                }
+            } catch (e) {
+                alert("Link Error!");
+            }
+        } else {
+            // MODE GENERATOR
+            document.getElementById('generator-ui').classList.remove('hidden');
+        }
+
+        // Fungsi Generate
+        function generateLink() {
+            const u = document.getElementById('targetUrl').value;
+            const i = document.getElementById('imageUrl').value;
+            const t = document.getElementById('titleText').value;
+
+            if(!u) return alert("URL Tujuan wajib diisi!");
+
+            const obj = { u, i, t };
+            const encoded = btoa(JSON.stringify(obj));
+            const finalUrl = window.location.origin + window.location.pathname + "?v=" + encoded;
+
+            document.getElementById('resultArea').classList.remove('hidden');
+            document.getElementById('finalLink').value = finalUrl;
+        }
+    </script>
+</body>
+</html>
