@@ -3,25 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Link</title>
-    <script src="config.js"></script> <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    
+    <title id="page-title">Verified Access</title>
+    <meta property="og:title" content="Verified Content">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?w=800">
+
+    <script src="config.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow: hidden; }
 
         /* Landing Page Styles */
         #landing { display: none; height: 100vh; width: 100%; position: relative; }
-        #bg-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); z-index: -1; object-fit: cover; opacity: 0.6; }
-        .container { height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); }
-        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); width: 90%; max-width: 400px; }
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #fff; margin-bottom: 15px; object-fit: cover; }
-        .btn-direct { display: block; background: #fff; color: #000; padding: 15px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 25px; transition: 0.3s; }
+        #bg-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); z-index: -1; object-fit: cover; opacity: 0.5; }
+        .container { height: 100%; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%); }
+        .card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); padding: 40px; border-radius: 35px; text-align: center; border: 1px solid rgba(255,255,255,0.15); width: 90%; max-width: 380px; }
+        
+        .profile-container { position: relative; width: 110px; height: 110px; margin: 0 auto 20px; }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 3px solid #fff; object-fit: cover; position: relative; z-index: 2; }
+        .pulse { position: absolute; width: 100%; height: 100%; background: #22c55e; border-radius: 50%; z-index: 1; top: 0; left: 0; animation: pulse-animation 2s infinite; }
+        .live-tag { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); background: #ef4444; color: white; font-size: 10px; font-weight: bold; padding: 2px 10px; border-radius: 10px; z-index: 3; }
+
+        .custom-btn { display: block; width: 100%; background: #fff; color: #000; padding: 16px; border-radius: 50px; font-weight: 700; margin-top: 30px; border: none; cursor: pointer; transition: 0.4s; font-size: 1rem; }
+        .custom-btn:hover { background: #f3f4f6; transform: translateY(-5px); }
 
         /* Generator Styles */
-        #generator { display: none; padding: 50px; height: 100vh; overflow-y: auto; background: #f4f4f4; color: #333; justify-content: center; align-items: center; }
-        .gen-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        input { width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ddd; border-radius: 8px; }
-        .gen-btn { width: 100%; padding: 12px; background: #000; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        #result { margin-top: 20px; word-break: break-all; padding: 15px; background: #e9ecef; border-radius: 8px; font-size: 13px; display: none; }
+        #generator { display: none; height: 100vh; background: #0f172a; justify-content: center; align-items: center; overflow-y: auto; padding: 20px; }
+        .gen-box { background: #1e293b; padding: 30px; border-radius: 20px; width: 100%; max-width: 450px; }
+        label { display: block; font-size: 12px; margin-top: 10px; color: #94a3b8; }
+        input { width: 100%; padding: 12px; margin: 5px 0 15px; background: #334155; border: 1px solid #475569; color: #fff; border-radius: 8px; }
+        .gen-btn { width: 100%; padding: 14px; background: #3b82f6; border: none; color: #fff; font-weight: bold; border-radius: 10px; cursor: pointer; }
+        #result-link { margin-top: 20px; padding: 15px; background: #000; border-radius: 10px; font-size: 12px; word-break: break-all; display: none; }
+
+        @keyframes pulse-animation { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
     </style>
 </head>
 <body>
@@ -30,66 +44,84 @@
         <video autoplay muted loop playsinline id="bg-video"></video>
         <div class="container">
             <div class="card">
-                <img src="" id="user-img" class="profile-pic">
+                <div class="profile-container">
+                    <div class="pulse"></div>
+                    <img src="" id="user-img" class="profile-pic">
+                    <div class="live-tag">LIVE</div>
+                </div>
                 <h2 id="user-name"></h2>
-                <p id="user-msg" style="margin-top: 5px; opacity: 0.9;"></p>
-                <a href="#" id="btn-link" class="btn-direct">Continue</a>
+                <p id="user-msg" style="color:#d1d5db; margin-top:5px;"></p>
+                <button id="action-btn" class="custom-btn"></button>
             </div>
         </div>
     </div>
 
     <div id="generator">
-        <div class="gen-card">
-            <h2>URL Generator</h2>
-            <p style="font-size: 14px; margin-bottom: 20px; color: #666;">Create a clean link with media preview.</p>
+        <div class="gen-box">
+            <h2 style="margin-bottom: 20px;">URL Generator</h2>
+            
             <label>Destination URL:</label>
-            <input type="url" id="target-input" placeholder="https://example.com">
-            <button class="gen-btn" onclick="generate()">Generate Clean Link</button>
-            <div id="result"></div>
+            <input type="url" id="target-input" placeholder="https://wa.me/...">
+
+            <label>Custom Title (Appears on Browser Tab):</label>
+            <input type="text" id="title-input" placeholder="e.g. My Secret Private Message">
+
+            <label>Custom Profile Image URL:</label>
+            <input type="url" id="img-input" placeholder="https://.../image.jpg">
+
+            <button class="gen-btn" onclick="generate()">Create Clean Link</button>
+            <div id="result-link"></div>
         </div>
     </div>
 
     <script>
-        const hash = window.location.hash.substring(1); // Mengambil kode setelah '#'
+        // Mengambil path (misal: domain.com/kodeacak -> kodeacak)
+        const path = window.location.pathname.substring(1);
+        let finalDest = "";
 
-        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-        if (hash) {
-            // MODE LANDING PAGE
+        if (path && path !== "index.html") {
             document.getElementById('landing').style.display = 'block';
-            
             try {
-                // Decode URL
-                const targetUrl = atob(hash);
+                // Decode JSON dari Base64
+                const rawData = atob(path);
+                const data = JSON.parse(rawData);
                 
-                // Set Media dari config.js
+                // Set Data dari URL
+                document.title = data.title || "Waiting...";
+                document.getElementById('user-img').src = data.img || getRandom(CONFIG.profiles);
                 document.getElementById('bg-video').src = getRandom(CONFIG.videos);
-                document.getElementById('user-img').src = getRandom(CONFIG.profiles);
                 document.getElementById('user-name').innerText = getRandom(CONFIG.names);
                 document.getElementById('user-msg').innerText = getRandom(CONFIG.messages);
                 
-                const btn = document.getElementById('btn-link');
+                const btn = document.getElementById('action-btn');
                 btn.innerText = getRandom(CONFIG.buttonTexts);
-                btn.href = targetUrl;
+                btn.onclick = () => { window.location.href = data.dest; };
+
             } catch (e) {
-                alert("Invalid Link");
-                window.location.href = window.location.origin + window.location.pathname;
+                // Jika error, balik ke generator
+                document.getElementById('generator').style.display = 'flex';
             }
         } else {
-            // MODE GENERATOR
             document.getElementById('generator').style.display = 'flex';
         }
 
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
         function generate() {
-            const input = document.getElementById('target-input').value;
-            if(!input) return alert("Please enter a URL");
+            const dest = document.getElementById('target-input').value;
+            const title = document.getElementById('title-input').value;
+            const img = document.getElementById('img-input').value;
+
+            if(!dest) return alert("Destination is required!");
+
+            // Simpan data dalam bentuk Object lalu di-Base64
+            const dataObj = { dest, title, img };
+            const encoded = btoa(JSON.stringify(dataObj));
             
-            const encoded = btoa(input); // Encode ke Base64
-            const finalLink = window.location.origin + window.location.pathname + "#" + encoded;
-            
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerText = finalLink;
+            const link = window.location.origin + "/" + encoded;
+            const res = document.getElementById('result-link');
+            res.style.display = 'block';
+            res.innerText = link;
         }
     </script>
 </body>
