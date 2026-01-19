@@ -3,128 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waiting for you...</title>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { width: 100%; height: 100vh; overflow: hidden; background: #000; color: #fff; }
+    <title>Personal Link</title>
+    <script src="config.js"></script> <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #000; color: #fff; overflow: hidden; }
 
-        #bg-video {
-            position: absolute;
-            top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            opacity: 0.6;
-            object-fit: cover;
-        }
+        /* Landing Page Styles */
+        #landing { display: none; height: 100vh; width: 100%; position: relative; }
+        #bg-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); z-index: -1; object-fit: cover; opacity: 0.6; }
+        .container { height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); }
+        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); width: 90%; max-width: 400px; }
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #fff; margin-bottom: 15px; object-fit: cover; }
+        .btn-direct { display: block; background: #fff; color: #000; padding: 15px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 25px; transition: 0.3s; }
 
-        .container {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: rgba(0,0,0,0.3);
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .profile-pic {
-            width: 100px; height: 100px;
-            border-radius: 50%;
-            border: 3px solid #fff;
-            margin-bottom: 20px;
-            object-fit: cover;
-        }
-
-        .message {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            line-height: 1.4;
-        }
-
-        .btn-continue {
-            display: inline-block;
-            background: #fff;
-            color: #000;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-continue:hover { transform: scale(1.05); background: #eee; }
+        /* Generator Styles */
+        #generator { display: none; padding: 50px; height: 100vh; overflow-y: auto; background: #f4f4f4; color: #333; justify-content: center; align-items: center; }
+        .gen-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        input { width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .gen-btn { width: 100%; padding: 12px; background: #000; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #result { margin-top: 20px; word-break: break-all; padding: 15px; background: #e9ecef; border-radius: 8px; font-size: 13px; display: none; }
     </style>
 </head>
 <body>
 
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="" type="video/mp4">
-    </video>
-
-    <div class="container">
-        <div class="card">
-            <img src="" id="profile-img" class="profile-pic">
-            
-            <div class="message">
-                <strong id="display-name">...</strong> is waiting for you to come.
+    <div id="landing">
+        <video autoplay muted loop playsinline id="bg-video"></video>
+        <div class="container">
+            <div class="card">
+                <img src="" id="user-img" class="profile-pic">
+                <h2 id="user-name"></h2>
+                <p id="user-msg" style="margin-top: 5px; opacity: 0.9;"></p>
+                <a href="#" id="btn-link" class="btn-direct">Continue</a>
             </div>
+        </div>
+    </div>
 
-            <a href="#" id="target-link" class="btn-continue">Continue</a>
+    <div id="generator">
+        <div class="gen-card">
+            <h2>URL Generator</h2>
+            <p style="font-size: 14px; margin-bottom: 20px; color: #666;">Create a clean link with media preview.</p>
+            <label>Destination URL:</label>
+            <input type="url" id="target-input" placeholder="https://example.com">
+            <button class="gen-btn" onclick="generate()">Generate Clean Link</button>
+            <div id="result"></div>
         </div>
     </div>
 
     <script>
-        const videos = [
-            "https://videos.pexels.com/video-files/856973/856973-hd_1920_1080_25fps.mp4",
-            "https://videos.pexels.com/video-files/3125907/3125907-hd_1920_1080_25fps.mp4",
-            "https://videos.pexels.com/video-files/2022395/2022395-hd_1920_1080_30fps.mp4"
-        ];
-
-        const profiles = [
-            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200",
-            "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200"
-        ];
-
-        const names = ["Sarah", "Alex", "Chloe", "Daniel", "Zoe", "Ryan"];
-        const buttonTexts = ["Continue", "Click Here", "Open Message", "Join Now"];
+        const hash = window.location.hash.substring(1); // Mengambil kode setelah '#'
 
         function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            // 1. Setup Visual Random
-            const selectedName = getRandom(names);
-            document.getElementById("bg-video").src = getRandom(videos);
-            document.getElementById("profile-img").src = getRandom(profiles);
-            document.getElementById("display-name").innerText = selectedName;
-            document.getElementById("target-link").innerText = getRandom(buttonTexts);
-
-            // 2. Decode URL dari URL Path
-            // Mengambil string setelah '?'
-            const encodedData = window.location.search.substring(1); 
+        if (hash) {
+            // MODE LANDING PAGE
+            document.getElementById('landing').style.display = 'block';
             
-            if (encodedData) {
-                try {
-                    // Decode Base64 kembali ke URL asli
-                    const decodedUrl = atob(encodedData);
-                    document.getElementById("target-link").href = decodedUrl;
-                } catch (e) {
-                    console.error("Invalid URL format");
-                    document.getElementById("target-link").innerText = "Link Expired";
-                }
+            try {
+                // Decode URL
+                const targetUrl = atob(hash);
+                
+                // Set Media dari config.js
+                document.getElementById('bg-video').src = getRandom(CONFIG.videos);
+                document.getElementById('user-img').src = getRandom(CONFIG.profiles);
+                document.getElementById('user-name').innerText = getRandom(CONFIG.names);
+                document.getElementById('user-msg').innerText = getRandom(CONFIG.messages);
+                
+                const btn = document.getElementById('btn-link');
+                btn.innerText = getRandom(CONFIG.buttonTexts);
+                btn.href = targetUrl;
+            } catch (e) {
+                alert("Invalid Link");
+                window.location.href = window.location.origin + window.location.pathname;
             }
-        });
+        } else {
+            // MODE GENERATOR
+            document.getElementById('generator').style.display = 'flex';
+        }
+
+        function generate() {
+            const input = document.getElementById('target-input').value;
+            if(!input) return alert("Please enter a URL");
+            
+            const encoded = btoa(input); // Encode ke Base64
+            const finalLink = window.location.origin + window.location.pathname + "#" + encoded;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerText = finalLink;
+        }
     </script>
 </body>
 </html>
