@@ -3,64 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Preview Tool</title>
+    <title>Media Preview</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0f172a; color: white; font-family: sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; }
+        
+        /* Video Fullscreen Background */
+        #bg-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            object-fit: cover;
+            filter: brightness(0.6); /* Membuat video sedikit gelap agar teks terbaca */
+        }
+
+        .content-overlay {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3); /* Overlay halus */
+        }
+
+        .glass-card {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .btn-glow {
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.8);
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div id="generator-ui" class="hidden w-full max-w-md p-8 glass rounded-2xl">
-        <h2 class="text-2xl font-bold mb-6 text-pink-500">URL Generator</h2>
-        <div class="space-y-4">
-            <div>
-                <label class="block text-sm mb-1">Target URL (Destinasi):</label>
-                <input type="text" id="targetUrl" placeholder="https://example.com" class="w-full p-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-pink-500">
-            </div>
-            <div>
-                <label class="block text-sm mb-1">Image Preview URL:</label>
-                <input type="text" id="imageUrl" placeholder="https://site.com/foto.jpg" class="w-full p-2 rounded bg-gray-800 border border-gray-700">
-            </div>
-            <div>
-                <label class="block text-sm mb-1">Title Preview:</label>
-                <input type="text" id="titleText" placeholder="Contoh: Video Viral Hari Ini" class="w-full p-2 rounded bg-gray-800 border border-gray-700">
-            </div>
-            <button onclick="generateLink()" class="w-full bg-pink-600 hover:bg-pink-700 py-2 rounded font-bold transition">Generate Link</button>
-            
-            <div id="resultArea" class="hidden mt-6">
-                <p class="text-xs text-gray-400 mb-1">Copy Link Dibawah:</p>
-                <textarea id="finalLink" readonly class="w-full p-2 h-24 text-xs bg-black rounded border border-pink-500 text-pink-300 focus:outline-none"></textarea>
+    <div id="generator-ui" class="hidden min-h-screen flex items-center justify-center bg-slate-900 p-4">
+        <div class="w-full max-w-md p-8 bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6 text-pink-500 text-center">URL Generator</h2>
+            <div class="space-y-4">
+                <input type="text" id="targetUrl" placeholder="Link Tujuan (https://...)" class="w-full p-3 rounded bg-slate-700 border-none text-white focus:ring-2 focus:ring-pink-500">
+                <input type="text" id="imageUrl" placeholder="URL Foto Preview" class="w-full p-3 rounded bg-slate-700 border-none text-white">
+                <input type="text" id="titleText" placeholder="Judul Preview" class="w-full p-3 rounded bg-slate-700 border-none text-white">
+                <button onclick="generateLink()" class="w-full bg-pink-600 hover:bg-pink-700 py-3 rounded-lg font-bold text-white transition-all">GENERATE LINK</button>
+                
+                <div id="resultArea" class="hidden mt-6 animate-fade-in">
+                    <p class="text-xs text-gray-400 mb-2">Salin link hasil generate:</p>
+                    <textarea id="finalLink" readonly class="w-full p-3 h-20 text-xs bg-black rounded border border-pink-900 text-pink-400 focus:outline-none"></textarea>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="landing-ui" class="hidden w-full max-w-lg text-center">
-        <div class="glass p-4 rounded-3xl overflow-hidden shadow-2xl">
-            <video id="v-player" class="w-full rounded-2xl mb-4 aspect-video object-cover" controls autoplay muted loop>
-                <source src="media.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+    <div id="landing-ui" class="hidden">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="media.mp4" type="video/mp4">
+        </video>
 
-            <h1 id="v-title" class="text-xl font-bold mb-2">Loading...</h1>
-            <p id="v-desc" class="text-pink-400 font-semibold mb-6 italic"></p>
-
-            <a id="v-btn" href="#" class="inline-block w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full text-lg font-extrabold uppercase tracking-widest animate-bounce shadow-lg">
-                Masuk Sekarang
-            </a>
+        <div class="content-overlay">
+            <div class="glass-card animate-scale-up">
+                <h1 id="v-title" class="text-white text-2xl font-extrabold mb-2 tracking-tight">Title Here</h1>
+                <p id="v-desc" class="text-pink-400 text-sm font-medium mb-8 uppercase tracking-widest"></p>
+                
+                <a id="v-btn" href="#" class="btn-glow inline-block w-full py-4 bg-pink-600 text-white rounded-full text-lg font-black uppercase tracking-tighter shadow-lg">
+                    WATCH FULL VIDEO
+                </a>
+                
+                <p class="mt-6 text-gray-400 text-[10px] uppercase">Verified Content • 18+ Only</p>
+            </div>
         </div>
-        <p class="mt-4 text-gray-500 text-xs">18+ Only. Content may be sensitive.</p>
     </div>
 
     <script>
-        // Logika Random Deskripsi
         function getRandomGirls() {
             const num = Math.floor(Math.random() * (100000 - 10000 + 1)) + 10000;
-            return `${num.toLocaleString()} Girls ready or online Girls`;
+            return `🔥 ${num.toLocaleString()} Girls Online Now`;
         }
 
-        // Jalankan saat halaman dibuka
         const params = new URLSearchParams(window.location.search);
         const data = params.get('v');
 
@@ -69,31 +106,27 @@
             document.getElementById('landing-ui').classList.remove('hidden');
             try {
                 const decoded = JSON.parse(atob(data));
-                document.getElementById('v-title').innerText = decoded.t;
+                document.getElementById('v-title').innerText = decoded.t || "Exclusive Video";
                 document.getElementById('v-desc').innerText = getRandomGirls();
                 document.getElementById('v-btn').href = decoded.u;
-                // Mengubah meta og:image secara dinamis (terbatas pada beberapa platform)
-                if(decoded.i) {
-                    let meta = document.createElement('meta');
-                    meta.property = "og:image";
-                    meta.content = decoded.i;
-                    document.getElementsByTagName('head')[0].appendChild(meta);
-                }
+                
+                // Set page title
+                document.title = decoded.t || "Video Preview";
             } catch (e) {
-                alert("Link Error!");
+                document.body.innerHTML = "<div class='text-white p-10 text-center'>Invalid Link.</div>";
             }
         } else {
             // MODE GENERATOR
             document.getElementById('generator-ui').classList.remove('hidden');
+            document.body.style.overflow = "auto";
         }
 
-        // Fungsi Generate
         function generateLink() {
             const u = document.getElementById('targetUrl').value;
             const i = document.getElementById('imageUrl').value;
             const t = document.getElementById('titleText').value;
 
-            if(!u) return alert("URL Tujuan wajib diisi!");
+            if(!u) return alert("Masukkan link tujuan!");
 
             const obj = { u, i, t };
             const encoded = btoa(JSON.stringify(obj));
@@ -103,5 +136,14 @@
             document.getElementById('finalLink').value = finalUrl;
         }
     </script>
+
+    <style>
+        /* Animasi Sederhana */
+        @keyframes scale-up {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-scale-up { animation: scale-up 0.5s ease-out forwards; }
+    </style>
 </body>
 </html>
