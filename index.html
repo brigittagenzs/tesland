@@ -1,188 +1,207 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <meta property="og:title" content="Kutipan Hari Ini Untukmu">
-    <meta property="og:description" content="Klik untuk melihat pesan spesial dan inspirasi harian.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:title" content="Verified Content Access">
+    <meta property="og:description" content="Click to verify and proceed to the destination.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80">
     
-    <title>Inspirasi Harian</title>
+    <title>Please Wait...</title>
     
     <style>
-        /* Reset & Base Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body, html { height: 100%; width: 100%; overflow: hidden; background-color: #000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        body { width: 100%; height: 100vh; overflow: hidden; background: #000; color: #fff; }
 
-        /* Fullscreen Background */
-        #bg-media {
+        /* Fullscreen Video Background */
+        #bg-video {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0.6; /* Gelapkan sedikit agar teks terbaca */
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
             z-index: -1;
-            transition: opacity 1s ease-in-out;
+            opacity: 0.7;
+            object-fit: cover;
         }
 
-        /* Container Utama */
+        /* Overlay Gelap */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 0;
+        }
+
+        /* Container */
         .container {
+            position: relative;
+            z-index: 2;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            color: white;
             padding: 20px;
-            backdrop-filter: blur(4px); /* Efek kaca buram */
         }
 
-        /* Profile Card */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        /* Glass Card */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
             border-radius: 20px;
-            padding: 40px 30px;
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            animation: fadeInUp 1s ease;
         }
 
-        /* Profile Image */
-        .profile-img {
-            width: 100px;
-            height: 100px;
+        .profile-pic {
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.8);
+            margin-bottom: 20px;
             object-fit: cover;
-            border: 3px solid white;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        /* Teks */
-        h1 { font-size: 1.5rem; margin-bottom: 5px; font-weight: 600; }
-        p.role { font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px; font-style: italic; }
-        
-        /* Quote Box */
-        .quote-box {
+        h2 { font-weight: 700; font-size: 1.8rem; margin-bottom: 5px; }
+        p.username { font-size: 0.9rem; opacity: 0.8; letter-spacing: 1px; margin-bottom: 25px; text-transform: uppercase; }
+
+        .quote {
             font-size: 1.1rem;
-            line-height: 1.6;
+            font-style: italic;
+            line-height: 1.5;
             margin-bottom: 30px;
-            font-weight: 500;
+            color: #eee;
         }
 
         /* Button */
-        .btn-direct {
+        .btn-continue {
             display: inline-block;
-            background: #25D366; /* Warna WA atau custom */
+            background: linear-gradient(45deg, #FF512F, #DD2476);
             color: white;
-            padding: 12px 30px;
+            padding: 15px 40px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            transition: transform 0.2s, background 0.2s;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            font-size: 1rem;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(221, 36, 118, 0.4);
+            border: none;
+            cursor: pointer;
         }
 
-        .btn-direct:hover {
-            transform: scale(1.05);
-            background: #128C7E;
+        .btn-continue:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(221, 36, 118, 0.6);
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <img id="bg-media" src="" alt="Background Nature">
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
 
     <div class="container">
-        <div class="profile-card">
-            <img id="profile-pic" src="" alt="Profile" class="profile-img">
+        <div class="card">
+            <img src="" id="profile-img" class="profile-pic" alt="Profile">
+            <h2 id="random-name">Loading...</h2>
+            <p class="username">@VerifiedUser</p>
             
-            <h1 id="user-name">Loading...</h1>
-            <p class="role">Inspirasi Hari Ini</p>
+            <p class="quote">"<span id="random-quote">...</span>"</p>
 
-            <div class="quote-box">
-                "<span id="user-quote">...</span>"
+            <a href="#" id="target-link" class="btn-continue">
+                Access Content
+            </a>
+            
+            <div id="error-msg" style="color: #ff6b6b; margin-top:10px; font-size:0.8rem;" class="hidden">
+                No destination URL provided.
             </div>
-
-            <a href="#" id="direct-link" class="btn-direct">Lanjut Baca &rarr;</a>
         </div>
     </div>
 
     <script>
-        // --- DATA BASE (Bisa ditambah) ---
-        
-        // 1. Daftar Nama (Indonesia)
+        // --- CONFIGURATION ---
+
+        // 1. Random Background Videos (MP4) - Nature/Aesthetic
+        const videos = [
+            "https://videos.pexels.com/video-files/856973/856973-hd_1920_1080_25fps.mp4", // Waves
+            "https://videos.pexels.com/video-files/1448735/1448735-hd_1920_1080_24fps.mp4", // Forest
+            "https://videos.pexels.com/video-files/2552601/2552601-hd_1920_1080_24fps.mp4", // Clouds
+            "https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080_25fps.mp4", // Rain
+            "https://videos.pexels.com/video-files/3629511/3629511-hd_1920_1080_25fps.mp4"  // Abstract
+        ];
+
+        // 2. Random Profile Pictures
+        const profiles = [
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
+            "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80"
+        ];
+
+        // 3. Random Names
         const names = [
-            "Ahmad Fauzi", "Siti Aminah", "Rudi Hartono", "Dewi Sartika", 
-            "Budi Santoso", "Rina Marlina", "Eko Prasetyo", "Nisa Sabyan",
-            "Fajar Nugraha", "Lestari Alam"
+            "Jessica", "Alexander", "Sophia", "Michael", 
+            "Emily", "Daniel", "Olivia", "David",
+            "Isabella", "James"
         ];
 
-        // 2. Daftar Foto Background (Pemandangan Alam / Masjid / Arsitektur)
-        const backgrounds = [
-            "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80", // Alam Kabut
-            "https://images.unsplash.com/photo-1519681393798-3828fb4090bb?auto=format&fit=crop&w=1920&q=80", // Gunung
-            "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80", // Taj Mahal/Arsitektur
-            "https://images.unsplash.com/photo-1501854140884-074bf6b24363?auto=format&fit=crop&w=1920&q=80", // Pantai
-            "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=1920&q=80"  // Hutan Gelap
-        ];
-
-        // 3. Daftar Foto Profil (Avatar Random)
-        const profileImages = [
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
-            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80",
-            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=200&q=80",
-            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80"
-        ];
-
-        // 4. Daftar Kata-Kata Mutiara / Motivasi
+        // 4. Random English Quotes
         const quotes = [
-            "Rezeki sudah tertakar, tidak akan tertukar.",
-            "Mulailah harimu dengan Bismillah dan senyuman.",
-            "Kesabaran adalah kunci dari segala kelegaan.",
-            "Sebaik-baik manusia adalah yang paling bermanfaat bagi orang lain.",
-            "Jangan menyerah, badai pasti berlalu.",
-            "Bersyukur adalah cara terbaik menikmati hidup.",
-            "Usaha tidak akan pernah mengkhianati hasil."
+            "The best way to predict the future is to create it.",
+            "Dream big and dare to fail.",
+            "Happiness is not by chance, but by choice.",
+            "Do what you love, love what you do.",
+            "Stay hungry, stay foolish.",
+            "Every moment is a fresh beginning.",
+            "Believe you can and you're halfway there."
         ];
 
-        // 5. Link Tujuan Akhir (Ganti dengan link Anda)
-        const destinationUrl = "https://google.com"; 
-
-        // --- LOGIC SCRIPT ---
-
-        function getRandomItem(arr) {
+        // --- LOGIC ---
+        function getRandom(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            // Ambil elemen
-            const bgElement = document.getElementById("bg-media");
-            const nameElement = document.getElementById("user-name");
-            const quoteElement = document.getElementById("user-quote");
-            const profileElement = document.getElementById("profile-pic");
-            const linkElement = document.getElementById("direct-link");
+            // Set Random Content
+            document.querySelector("#bg-video source").src = getRandom(videos);
+            document.getElementById("bg-video").load(); // Reload video source
+            
+            document.getElementById("profile-img").src = getRandom(profiles);
+            document.getElementById("random-name").innerText = getRandom(names);
+            document.getElementById("random-quote").innerText = getRandom(quotes);
 
-            // Set Data Random
-            bgElement.src = getRandomItem(backgrounds);
-            nameElement.innerText = getRandomItem(names);
-            quoteElement.innerText = getRandomItem(quotes);
-            profileElement.src = getRandomItem(profileImages);
+            // Get URL Parameter (The Destination)
+            const urlParams = new URLSearchParams(window.location.search);
+            const destination = urlParams.get('dest'); // We look for ?dest=...
 
-            // Set Link Tujuan
-            linkElement.href = destinationUrl;
+            const btn = document.getElementById("target-link");
+            
+            if (destination) {
+                // Decode URL incase it was encoded
+                try {
+                    btn.href = decodeURIComponent(destination);
+                } catch (e) {
+                    btn.href = destination;
+                }
+            } else {
+                btn.href = "#";
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "not-allowed";
+                document.getElementById("error-msg").classList.remove("hidden");
+                btn.innerText = "No Link Found";
+            }
         });
-
     </script>
 </body>
 </html>
