@@ -1,95 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Access</title>
-    <script src="config.js"></script>
+    <title>Generator Link Random</title>
     <style>
-        /* Gaya CSS sama seperti sebelumnya (Efek Pulse, Live, Glassmorphism) */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #000; color: #fff; overflow: hidden; }
-        #landing, #generator { display: none; height: 100vh; width: 100%; position: relative; }
-        #bg-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); z-index: -1; object-fit: cover; opacity: 0.5; }
-        .container { height: 100%; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, transparent, rgba(0,0,0,0.8)); }
-        .card { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); padding: 40px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); width: 90%; max-width: 400px; }
-        .profile-container { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; }
-        .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; object-fit: cover; z-index: 2; position: relative; }
-        .pulse { position: absolute; top:0; left:0; width:100%; height:100%; background:#22c55e; border-radius:50%; animation: pulse 2s infinite; }
-        .live { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); background: #ef4444; padding: 2px 8px; border-radius: 10px; font-size: 10px; z-index: 3; }
-        .btn { display: block; width: 100%; background: #fff; color: #00; padding: 15px; border-radius: 50px; font-weight: bold; margin-top: 20px; border: none; cursor: pointer; transition: 0.3s; text-decoration: none; color: #000; }
-        .btn:hover { transform: scale(1.05); }
-        @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 70% { transform: scale(1.2); opacity: 0; } 100% { transform: scale(0.9); opacity: 0; } }
-        
-        /* Gen Style */
-        #generator { background: #111; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
-        .gen-box { background: #222; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; border: 1px solid #333; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #333; border: 1px solid #444; color: #fff; border-radius: 8px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-top: 0; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        button { background: #2563eb; color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 20px; font-size: 16px; font-weight: bold; }
+        button:hover { background: #1d4ed8; }
+        #result { margin-top: 25px; padding: 15px; background: #eef2ff; border-radius: 8px; border: 1px dashed #2563eb; display: none; }
+        .link-text { word-break: break-all; color: #2563eb; font-family: monospace; }
     </style>
 </head>
 <body>
-
-    <div id="landing">
-        <video autoplay muted loop playsinline id="bg-video"></video>
-        <div class="container">
-            <div class="card">
-                <div class="profile-container">
-                    <div class="pulse"></div>
-                    <img src="" id="u-img" class="profile-pic">
-                    <div class="live">LIVE</div>
-                </div>
-                <h2 id="u-name"></h2>
-                <p id="u-msg"></p>
-                <button id="u-btn" class="btn"></button>
-            </div>
-        </div>
-    </div>
-
-    <div id="generator">
-        <div class="gen-box">
-            <h2>Multi-Domain Generator</h2>
-            <input type="url" id="target" placeholder="Target Link (https://...)">
-            <input type="text" id="title" placeholder="Preview Title">
-            <input type="url" id="img" placeholder="Preview Image URL">
-            <button class="btn" onclick="generate()">Generate Random Domain Link</button>
-            <div id="result" style="margin-top: 20px; word-break: break-all; font-size: 12px; color: #22c55e;"></div>
+    <div class="card">
+        <h2>Link Preview Generator</h2>
+        <label>Judul Preview</label>
+        <input type="text" id="t" placeholder="Contoh: Video Viral Terbaru">
+        
+        <label>URL Gambar (Hotlink)</label>
+        <input type="text" id="i" placeholder="https://site.com/gambar.jpg">
+        
+        <label>URL Tujuan (Target Link)</label>
+        <input type="text" id="u" placeholder="https://link-tujuan.com">
+        
+        <button onclick="generate()">Generate Random Domain Link</button>
+        
+        <div id="result">
+            <strong>Link Hasil (Siap Share):</strong><br>
+            <p id="generatedLink" class="link-text"></p>
+            <small style="color: #666;">*Deskripsi akan otomatis: 10.000 - 1.000.000 online girls</small>
         </div>
     </div>
 
     <script>
-        const path = window.location.pathname.substring(1);
-        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        async function generate() {
+            const btn = document.querySelector('button');
+            btn.innerText = "Sabar, lagi ambil domain...";
+            
+            const t = encodeURIComponent(document.getElementById('t').value);
+            const i = encodeURIComponent(document.getElementById('i').value);
+            const u = encodeURIComponent(document.getElementById('u').value);
 
-        if (path && path !== "index.html") {
-            document.getElementById('landing').style.display = 'block';
             try {
-                const data = JSON.parse(atob(path));
-                document.title = data.t;
-                document.getElementById('u-img').src = data.i || getRandom(CONFIG.profiles);
-                document.getElementById('u-name').innerText = getRandom(CONFIG.names);
-                document.getElementById('u-msg').innerText = getRandom(CONFIG.messages);
-                document.getElementById('bg-video').src = getRandom(CONFIG.videos);
-                const b = document.getElementById('u-btn');
-                b.innerText = getRandom(CONFIG.buttonTexts);
-                b.onclick = () => { window.location.href = data.d; };
-            } catch (e) { document.getElementById('generator').style.display = 'flex'; }
-        } else {
-            document.getElementById('generator').style.display = 'flex';
-        }
-
-        function generate() {
-            const d = document.getElementById('target').value;
-            const t = document.getElementById('title').value;
-            const i = document.getElementById('img').value;
-            if(!d) return alert("Fill target!");
-
-            const encoded = btoa(JSON.stringify({d, t, i}));
-            const randomDom = getRandom(CONFIG.domains);
-            const finalLink = `https://${randomDom}/${encoded}`;
-
-            const res = document.getElementById('result');
-            res.innerHTML = `<strong>Link Generated (Copied):</strong><br>${finalLink}`;
-            navigator.clipboard.writeText(finalLink);
+                // Ambil domain acak dari Cloudflare Function
+                const res = await fetch('/share?get_random=true');
+                const data = await res.json();
+                
+                if (data.domain) {
+                    const domain = data.domain.replace(/\/$/, ""); // hapus slash akhir jika ada
+                    const final = `https://${domain}/share?title=${t}&img=${i}&url=${u}`;
+                    
+                    document.getElementById('generatedLink').innerText = final;
+                    document.getElementById('result').style.display = 'block';
+                }
+            } catch (err) {
+                alert("Gagal koneksi ke server atau domain list!");
+            } finally {
+                btn.innerText = "Generate Random Domain Link";
+            }
         }
     </script>
 </body>
