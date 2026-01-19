@@ -2,65 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Generator</title>
+    <title>Clean URL Generator</title>
     <style>
-        body { font-family: sans-serif; padding: 50px; background: #f4f4f4; }
-        .box { background: white; padding: 30px; border-radius: 10px; max-width: 600px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { margin-top: 0; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; }
-        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
-        button:hover { background: #0056b3; }
-        .result-area { margin-top: 20px; display: none; }
-        textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; background: #eee; }
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background: #eee; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #000; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        #output { margin-top: 20px; word-break: break-all; background: #f9f9f9; padding: 10px; font-size: 12px; display: none; border: 1px dashed #ccc; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>🔗 URL Generator</h2>
+<div class="card">
+    <h3>Generator Link Bersih</h3>
+    <label>Link Tujuan:</label>
+    <input type="url" id="target" placeholder="https://wa.me/xxx atau lainnya">
+    <button onclick="generate()">Buat Link</button>
     
-    <label>1. Domain Anda (Tempat index.html diupload)</label>
-    <input type="text" id="domain" placeholder="e.g., https://mysite.vercel.app" value="">
-
-    <label>2. Link Tujuan (Target Akhir)</label>
-    <input type="url" id="target" placeholder="e.g., https://google.com or https://wa.me/..." required>
-
-    <button onclick="generateLink()">Generate Link</button>
-
-    <div class="result-area" id="result">
-        <label>Hasil Link:</label>
-        <textarea id="final-link" readonly></textarea>
-        <p style="font-size: 12px; color: #666;">Copy link ini dan sebarkan.</p>
-    </div>
+    <div id="output"></div>
 </div>
 
 <script>
-    // Coba otomatis deteksi domain jika file ini satu folder dengan index.html
-    document.getElementById("domain").value = window.location.origin + window.location.pathname.replace("generator.html", "");
+    function generate() {
+        const target = document.getElementById("target").value;
+        if(!target) return alert("Masukkan link!");
 
-    function generateLink() {
-        let domain = document.getElementById("domain").value;
-        let target = document.getElementById("target").value;
+        // Mengubah URL menjadi Base64 (untuk menyamarkan link)
+        const cleanString = btoa(target);
+        
+        // Mengambil domain saat ini
+        const baseUrl = window.location.origin + window.location.pathname.replace("generator.html", "index.html");
+        const finalUrl = baseUrl + "?" + cleanString;
 
-        // Bersihkan slash di akhir domain
-        if(domain.endsWith('/')) domain = domain.slice(0, -1);
-        if(domain.endsWith('generator.html')) domain = domain.replace('/generator.html', '');
-
-        if (!target) {
-            alert("Isi link tujuan dulu!");
-            return;
-        }
-
-        // Encode link tujuan agar aman
-        let encodedTarget = encodeURIComponent(target);
-
-        // Buat Link Akhir
-        let finalUrl = `${domain}/index.html?dest=${encodedTarget}`;
-
-        document.getElementById("result").style.display = "block";
-        document.getElementById("final-link").value = finalUrl;
+        const outputDiv = document.getElementById("output");
+        outputDiv.style.display = "block";
+        outputDiv.innerText = finalUrl;
     }
 </script>
 
